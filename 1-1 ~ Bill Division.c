@@ -12,69 +12,67 @@
 char* readline();
 char* ltrim(char*);
 char* rtrim(char*);
+char** split_string(char*);
 
 int parse_int(char*);
 
 /*
- * Complete the 'gradingStudents' function below.
+ * Complete the 'bonAppetit' function below.
  *
- * The function is expected to return an INTEGER_ARRAY.
- * The function accepts INTEGER_ARRAY grades as parameter.
+ * The function accepts following parameters:
+ *  1. INTEGER_ARRAY bill
+ *  2. INTEGER k
+ *  3. INTEGER b
  */
 
-int* gradingStudents(int grades_count, int* grades, int* result_count) 
+void bonAppetit(int bill_count, int* bill, int k, int b) 
 {
-    int a = 0;
-    for (int i = 0; i < grades_count; i++)
-        a++;
-    *result_count = a;
+    int Sum = 0;
+    int Anna;
+    int Cost;
+    int Amount;
     
-    int b = 0;
-    while (b < grades_count)
+    for(int i = 0; i < bill_count; i++)
     {
-        int c = grades[b];
-        while (c % 5 != 0)
-            c++;
-        
-        int d = c - grades[b];
-        if (d < 3 && 0 < d)
-            if (grades[b] > 35)
-                grades[b] = c;
-        
-        b++;
+        Sum += bill[i];
     }
     
-    return grades;
+    Anna = Sum - bill[k];
+    
+    if(Anna / 2 == b)
+    {
+        printf("Bon Appetit\n");
+    }
+    
+    else
+    {
+        Amount = Anna / 2;
+        Cost = b - Amount;
+        printf("%d", Cost);
+    }
 }
 
 int main()
 {
-    FILE* fptr = fopen(getenv("OUTPUT_PATH"), "w");
+    char** first_multiple_input = split_string(rtrim(readline()));
 
-    int grades_count = parse_int(ltrim(rtrim(readline())));
+    int n = parse_int(*(first_multiple_input + 0));
 
-    int* grades = malloc(grades_count * sizeof(int));
+    int k = parse_int(*(first_multiple_input + 1));
 
-    for (int i = 0; i < grades_count; i++) {
-        int grades_item = parse_int(ltrim(rtrim(readline())));
+    char** bill_temp = split_string(rtrim(readline()));
 
-        *(grades + i) = grades_item;
+    int* bill = malloc(n * sizeof(int));
+
+    for (int i = 0; i < n; i++) {
+        int bill_item = parse_int(*(bill_temp + i));
+
+        *(bill + i) = bill_item;
     }
 
-    int result_count;
-    int* result = gradingStudents(grades_count, grades, &result_count);
+    int b = parse_int(ltrim(rtrim(readline())));
 
-    for (int i = 0; i < result_count; i++) {
-        fprintf(fptr, "%d", *(result + i));
-
-        if (i != result_count - 1) {
-            fprintf(fptr, "\n");
-        }
-    }
-
-    fprintf(fptr, "\n");
-
-    fclose(fptr);
+    bonAppetit(n, bill, k, b);
 
     return 0;
 }
@@ -165,6 +163,27 @@ char* rtrim(char* str) {
     *(end + 1) = '\0';
 
     return str;
+}
+
+char** split_string(char* str) {
+    char** splits = NULL;
+    char* token = strtok(str, " ");
+
+    int spaces = 0;
+
+    while (token) {
+        splits = realloc(splits, sizeof(char*) * ++spaces);
+
+        if (!splits) {
+            return splits;
+        }
+
+        splits[spaces - 1] = token;
+
+        token = strtok(NULL, " ");
+    }
+
+    return splits;
 }
 
 int parse_int(char* str) {
